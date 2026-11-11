@@ -236,22 +236,35 @@
             align-items: center;
             background: var(--success-light);
             border-radius: 10px;
-            padding: 6px 10px;
+            padding: 8px 10px;
         }
 
         .queue-type-item-14 {
             text-align: center;
             flex: 1;
+            background: white;
+            border-radius: 10px;
+            padding: 6px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            border: 1px solid #bbf7d0;
+            margin: 0 4px;
         }
 
         .queue-type-label-14 {
             font-size: 0.9rem;
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .box-14-num-label {
+            font-size: 0.75rem;
             color: var(--text-muted);
-            font-weight: 600;
+            font-weight: 500;
+            margin-top: 2px;
         }
 
         .queue-number-14 {
-            font-size: 3.5rem;
+            font-size: 3.8rem;
             font-weight: 800;
             line-height: 1.1;
         }
@@ -314,7 +327,7 @@
         }
 
         .counter-number {
-            font-size: 2.6rem;
+            font-size: 3.8rem;
             font-weight: 800;
             color: var(--success);
             line-height: 1.1;
@@ -362,7 +375,7 @@
 
         .counter-box.express .counter-number {
             color: var(--danger);
-            font-size: 3.2rem;
+            font-size: 3.8rem;
         }
 
         /* Highlight Animation */
@@ -472,7 +485,7 @@
         </div>
         <div class="header-right">
             <div class="datetime-display" id="live-datetime">กำลังโหลดวันเวลา...</div>
-            <button class="btn-reset" onclick="resetAllQueues()">🗑️ ล้างคิวทั้งหมด </button>
+            <button class="btn-reset" onclick="resetAllQueues()">🗑️ ล้างคิวทั้งหมด</button>
         </div>
     </header>
 
@@ -488,21 +501,22 @@
         <!-- โซนจุดเรียกพบแพทย์ - ขวามือ (จัดแบ่งเป็น 3 บล็อกบาลานซ์กัน) -->
         <div class="zone-card doctor-zone">
             <div class="zone-title" style="color: var(--success);">
-                🩺 จุดเรียกพบแพทย์ <span style="font-size: 14px; font-weight: 500; color: #64748b;">(จุดที่ 14 และคลินิกเฉพาะทาง)</span>
+                🩺 จุดเรียกพบแพทย์ จุดที่ 14 <span style="font-size: 14px; font-weight: 500; color: #64748b;">(หมายเลขที่ปรากฏบนหน้าจอเรียกพบแพทย์ ติดต่อจุดบริการ 14)</span>
             </div>
 
             <div class="doctor-content-wrapper">
                 <!-- บล็อกที่ 1: จุดที่ 14 (ห้องตรวจแพทย์ทั่วไป) -->
                 <div class="box-14-container" id="box-14">
-                    <div class="box-14-title">จุดเรียกพบแพทย์ จุดที่ 14 (ห้องตรวจแพทย์ทั่วไป)</div>
+                    <div class="box-14-title">ห้องตรวจแพทย์ทั่วไป</div>
                     <div class="queue-group-14">
                         <div class="queue-type-item-14">
-                            <div class="queue-type-label-14">ทั่วไป</div>
+                            <div class="queue-type-label-14">บัตรคิว ทั่วไป</div>
+                            <div class="box-14-num-label">หมายเลข</div>
                             <div class="queue-number-14 general" id="queue-14-general">-</div>
                         </div>
-                        <div style="border-left: 2px solid #bbf7d0; height: 50px; margin: 0 10px;"></div>
                         <div class="queue-type-item-14">
-                            <div class="queue-type-label-14">สูงอายุ</div>
+                            <div class="queue-type-label-14" style="color: var(--warning);">บัตรคิว สูงอายุ 70 ปี ขึ้นไป</div>
+                            <div class="box-14-num-label">หมายเลข</div>
                             <div class="queue-number-14 elderly" id="queue-14-elderly">-</div>
                         </div>
                     </div>
@@ -536,7 +550,7 @@
     <!-- ช่องคำสั่งลอยมุมขวาล่าง -->
     <div class="hidden-command-box">
         <label for="quick-input" id="input-label">คิว:</label>
-        <input type="text" id="quick-input" placeholder="เช่น 101 แล้ว Enter">
+        <input type="text" id="quick-input" placeholder="...">
     </div>
 
     <script>
@@ -774,12 +788,12 @@
 
                 let currentTime = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 let historyEntry = {
-                    number: (queueType === 'elderly' ? 'ผู้สูงอายุ ' : '') + queueNum,
+                    number: queueNum,
                     location: `${zoneText} ${targetCode === '14' ? '14' : (triageList.includes(targetCode) ? targetCode : '14')}${clinicAnnounce}`,
                     time: currentTime
                 };
                 queueHistory.unshift(historyEntry);
-                if (queueHistory.length > 5) queueHistory.pop();
+                if (queueHistory.length > 3) queueHistory.pop();
                 localStorage.setItem('hospital_history_v5', JSON.stringify(queueHistory));
                 renderHistory();
 
@@ -807,14 +821,12 @@
                 utterance.lang = 'th-TH';
                 utterance.rate = 1.0;
 
-                // ค้นหาเสียงภาษาไทยที่เป็นผู้หญิง (ถ้ามีในระบบ)
                 let voices = window.speechSynthesis.getVoices();
                 let thaiVoice = voices.find(voice => 
                     (voice.lang === 'th-TH' || voice.lang === 'th') && 
                     (voice.name.includes('Female') || voice.name.includes('Kanya') || voice.name.includes('Premwadee') || voice.name.includes('Google'))
                 );
                 
-                // ถ้าไม่เจอเงื่อนไขเจาะจง ให้เลือกเสียงภาษาไทยเสียงแรกที่พบ
                 if (!thaiVoice) {
                     thaiVoice = voices.find(voice => voice.lang === 'th-TH' || voice.lang === 'th');
                 }
@@ -839,7 +851,6 @@
             }
         }
 
-        // โหลดรายชื่อเสียงล่วงหน้า (บางเบราว์เซอร์ต้องรอ event นี้)
         if ('speechSynthesis' in window) {
             window.speechSynthesis.onvoiceschanged = function() {
                 window.speechSynthesis.getVoices();
