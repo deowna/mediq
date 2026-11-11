@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจอแสดงผลคิวแผนกผู้ป่วยนอก โรงพยาบาลป่าซาง</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #15803d;
+            --success-light: #f0fdf4;
+            --warning: #c2410c;
+            --warning-light: #fff7ed;
+            --danger: #b91c1c;
+            --danger-light: #fef2f2;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            padding: 16px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 25px -5px rgba(29, 78, 216, 0.2);
+            margin-bottom: 14px;
+        }
+
+        .header-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .hospital-logo {
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .datetime-display {
+            text-align: right;
+            font-size: 1.05rem;
+            font-weight: 500;
+            opacity: 0.95;
+        }
+
+        .btn-reset {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-reset:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Main Layout: 2 Columns (Balanced) */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            flex: 1;
+            margin-bottom: 12px;
+            align-items: stretch;
+        }
+
+        /* Zone Card Base */
+        .zone-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .zone-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        /* Triage Grid (Left: 6 Boxes) */
+        .counters-grid-triage {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            flex: 1;
+        }
+
+        .counter-box {
+            background: var(--primary-light);
+            border: 2px solid #bfdbfe;
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .triage-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .triage-col-left {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .triage-val-num {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .triage-col-right {
+            background: white;
+            border-radius: 10px;
+            padding: 8px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            border: 1px solid #e2e8f0;
+        }
+
+        .triage-number {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .triage-val-queue {
+            font-size: 3.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.1;
+        }
+
+        /* Doctor Zone (Right: 3 Stacked Sections matching the requested frames) */
+        .doctor-zone {
+            background: linear-gradient(to bottom, #ffffff, var(--success-light));
+        }
+
+        .doctor-content-wrapper {
+            display: grid;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 12px;
+            flex: 1;
+        }
+
+        /* Box 1: จุดที่ 14 */
+        .box-14-container {
+            background: white;
+            border: 2px solid #bbf7d0;
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px -1px rgba(21, 128, 61, 0.05);
+        }
+
+        .box-14-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--success);
+            text-align: center;
+        }
+
+        .queue-group-14 {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: var(--success-light);
+            border-radius: 10px;
+            padding: 6px 10px;
+        }
+
+        .queue-type-item-14 {
+            text-align: center;
+            flex: 1;
+        }
+
+        .queue-type-label-14 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .queue-number-14 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .queue-number-14.general {
+            color: var(--success);
+        }
+
+        .queue-number-14.elderly {
+            color: var(--warning);
+        }
+
+        /* Box 2: คลินิกย่อย (อายุรกรรม, ศัลยกรรม, เด็ก) */
+        .counters-grid-clinic {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .clinic-box {
+            background: var(--success-light);
+            border: 2px solid #bbf7d0;
+            border-radius: 14px;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .clinic-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .counter-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--success);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .clinic-col-right {
+            background: white;
+            border-radius: 10px;
+            padding: 6px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            border: 1px solid #bbf7d0;
+        }
+
+        .clinic-number-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .counter-number {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: var(--success);
+            line-height: 1.1;
+        }
+
+        /* Box 3: คิวตรวจด่วน */
+        .counter-box.express {
+            background: var(--danger-light);
+            border: 2px solid #fecaca;
+            border-radius: 14px;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .express-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .counter-box.express .counter-name {
+            color: var(--danger);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .express-col-right {
+            background: white;
+            border-radius: 10px;
+            padding: 6px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            border: 1px solid #fecaca;
+        }
+
+        .express-number-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .counter-box.express .counter-number {
+            color: var(--danger);
+            font-size: 3.2rem;
+        }
+
+        /* Highlight Animation */
+        @keyframes pulseHighlight {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 25px 8px rgba(29, 78, 216, 0.35); background-color: #dbeafe; }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(29, 78, 216, 0); }
+        }
+
+        .counter-box.highlight, .box-14-container.highlight, .clinic-box.highlight, .counter-box.express.highlight {
+            animation: pulseHighlight 1.5s ease infinite;
+            border-color: var(--primary) !important;
+        }
+
+        /* History Container (Bottom) */
+        .history-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 12px 20px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .history-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .history-list {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            white-space: nowrap;
+            width: 100%;
+            padding: 4px 0;
+        }
+
+        .history-item {
+            background: var(--bg-main);
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Hidden Command Box */
+        .hidden-command-box {
+            position: fixed;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+
+        .hidden-command-box label {
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .hidden-command-box input {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 4px 8px;
+            color: white;
+            font-size: 0.85rem;
+            outline: none;
+            width: 150px;
+        }
+
+        .hidden-command-box input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive for smaller screens */
+        @media (max-width: 1100px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title-wrapper">
+            <span class="hospital-logo">🏥</span>
+            <h1>ระบบจอแสดงผลคิวแผนกผู้ป่วยนอก โรงพยาบาลป่าซาง</h1>
+        </div>
+        <div class="header-right">
+            <div class="datetime-display" id="live-datetime">กำลังโหลดวันเวลา...</div>
+            <button class="btn-reset" onclick="resetAllQueues()">🗑️ ล้างคิวทั้งหมด </button>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <!-- โซนจุดซักประวัติ (จุดที่ 19 - 24) - ซ้ายมือ (6 ช่อง) -->
+        <div class="zone-card">
+            <div class="zone-title" style="color: var(--primary);">
+                📋 จุดซักประวัติ <span style="font-size: 14px; font-weight: 500; color: #64748b;">(จุดที่ 19 - 24)</span>
+            </div>
+            <div class="counters-grid-triage" id="triage-grid"></div>
+        </div>
+
+        <!-- โซนจุดเรียกพบแพทย์ - ขวามือ (จัดแบ่งเป็น 3 บล็อกบาลานซ์กัน) -->
+        <div class="zone-card doctor-zone">
+            <div class="zone-title" style="color: var(--success);">
+                🩺 จุดเรียกพบแพทย์ <span style="font-size: 14px; font-weight: 500; color: #64748b;">(จุดที่ 14 และคลินิกเฉพาะทาง)</span>
+            </div>
+
+            <div class="doctor-content-wrapper">
+                <!-- บล็อกที่ 1: จุดที่ 14 (ห้องตรวจแพทย์ทั่วไป) -->
+                <div class="box-14-container" id="box-14">
+                    <div class="box-14-title">จุดเรียกพบแพทย์ จุดที่ 14 (ห้องตรวจแพทย์ทั่วไป)</div>
+                    <div class="queue-group-14">
+                        <div class="queue-type-item-14">
+                            <div class="queue-type-label-14">ทั่วไป</div>
+                            <div class="queue-number-14 general" id="queue-14-general">-</div>
+                        </div>
+                        <div style="border-left: 2px solid #bbf7d0; height: 50px; margin: 0 10px;"></div>
+                        <div class="queue-type-item-14">
+                            <div class="queue-type-label-14">สูงอายุ</div>
+                            <div class="queue-number-14 elderly" id="queue-14-elderly">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- บล็อกที่ 2: คลินิกย่อย 3 คลินิก -->
+                <div class="counters-grid-clinic" id="clinic-grid"></div>
+
+                <!-- บล็อกที่ 3: คิวตรวจด่วน -->
+                <div class="counter-box express" id="box-clinic-6">
+                    <div class="express-inner">
+                        <div class="counter-name">⚡ คิวตรวจด่วน</div>
+                        <div class="express-col-right">
+                            <div class="express-number-label">หมายเลข</div>
+                            <div class="counter-number" id="clinic-6">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- แถบประวัติการเรียกคิว (อยู่ข้างล่างสุด) -->
+    <div class="history-container">
+        <div class="history-title">🕒 ประวัติคิวล่าสุด:</div>
+        <div class="history-list" id="history-list">
+            <span style="color: #94a3b8; font-size: 0.95rem; font-weight: 500;">ยังไม่มีประวัติการเรียกคิว</span>
+        </div>
+    </div>
+
+    <!-- ช่องคำสั่งลอยมุมขวาล่าง -->
+    <div class="hidden-command-box">
+        <label for="quick-input" id="input-label">คิว:</label>
+        <input type="text" id="quick-input" placeholder="เช่น 101 แล้ว Enter">
+    </div>
+
+    <script>
+        const triageData = [19, 20, 21, 22, 23, 24];
+
+        const clinicsData = [
+            { id: '1', name: 'คลินิกอายุรกรรม' },
+            { id: '3', name: 'คลินิกศัลยกรรม' },
+            { id: '5', name: 'คลินิกเด็ก' }
+        ];
+
+        const clinicMap = {
+            '1': 'คลินิกอายุรกรรม',
+            '3': 'คลินิกศัลยกรรม',
+            '5': 'คลินิกเด็ก',
+            '6': 'คิวตรวจด่วน'
+        };
+
+        let currentQueues = JSON.parse(localStorage.getItem('hospital_queues_v5')) || {};
+        let queueHistory = JSON.parse(localStorage.getItem('hospital_history_v5')) || [];
+        let lastAnnouncedText = localStorage.getItem('hospital_last_speech_v5') || '';
+
+        let speechQueue = [];
+        let isSpeaking = false;
+        let pendingQueueNum = null;
+
+        function initDisplay() {
+            const triGrid = document.getElementById('triage-grid');
+            triGrid.innerHTML = '';
+            triageData.forEach(num => {
+                triGrid.innerHTML += `
+                    <div class="counter-box" id="box-${num}">
+                        <div class="triage-inner">
+                            <div class="triage-col-left">
+                                <span class="triage-label">จุดที่</span>
+                                <span class="triage-val-num">${num}</span>
+                            </div>
+                            <div class="triage-col-right">
+                                <div class="triage-number">หมายเลข</div>
+                                <div class="triage-val-queue" id="queue-${num}">-</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const clinicGrid = document.getElementById('clinic-grid');
+            clinicGrid.innerHTML = '';
+            clinicsData.forEach(clinic => {
+                clinicGrid.innerHTML += `
+                    <div class="clinic-box" id="box-clinic-${clinic.id}">
+                        <div class="clinic-inner">
+                            <div class="counter-name">${clinic.name}</div>
+                            <div class="clinic-col-right">
+                                <div class="clinic-number-label">หมายเลข</div>
+                                <div class="counter-number" id="clinic-${clinic.id}">-</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            renderQueues();
+            renderHistory();
+            updateLiveClock();
+            setInterval(updateLiveClock, 1000);
+
+            const quickInput = document.getElementById('quick-input');
+            quickInput.focus();
+            document.addEventListener('click', () => {
+                if (document.activeElement !== quickInput) {
+                    quickInput.focus();
+                }
+            });
+        }
+
+        function updateLiveClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const dateString = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+            const clockEl = document.getElementById('live-datetime');
+            if (clockEl) {
+                clockEl.innerText = `${dateString} | ${timeString}`;
+            }
+        }
+
+        function renderQueues() {
+            triageData.forEach(num => {
+                document.getElementById(`queue-${num}`).innerText = currentQueues[num] || '-';
+            });
+
+            if (!currentQueues['14']) currentQueues['14'] = { general: '-', elderly: '-' };
+            document.getElementById('queue-14-general').innerText = currentQueues['14'].general;
+            document.getElementById('queue-14-elderly').innerText = currentQueues['14'].elderly;
+
+            clinicsData.forEach(clinic => {
+                let key = `14-${clinic.id}`;
+                document.getElementById(`clinic-${clinic.id}`).innerText = currentQueues[key] || '-';
+            });
+
+            document.getElementById('clinic-6').innerText = currentQueues['14-6'] || '-';
+        }
+
+        function renderHistory() {
+            const historyList = document.getElementById('history-list');
+            if (queueHistory.length === 0) {
+                historyList.innerHTML = '<span style="color: #94a3b8; font-size: 0.95rem; font-weight: 500;">ยังไม่มีประวัติการเรียกคิว</span>';
+                return;
+            }
+
+            historyList.innerHTML = queueHistory.map(item => `
+                <div class="history-item">
+                    <strong style="color: var(--primary);">${item.number}</strong> ➔ ${item.location} <span style="color: #64748b; font-size: 0.85rem;">(${item.time})</span>
+                </div>
+            `).join('');
+        }
+
+        function resetAllQueues() {
+            if (confirm('คุณต้องการล้างข้อมูลคิวทั้งหมดเพื่อเริ่มวันใหม่ใช่หรือไม่?')) {
+                currentQueues = {};
+                queueHistory = [];
+                lastAnnouncedText = '';
+                pendingQueueNum = null;
+                localStorage.removeItem('hospital_queues_v5');
+                localStorage.removeItem('hospital_history_v5');
+                localStorage.removeItem('hospital_last_speech_v5');
+                document.getElementById('input-label').innerText = 'คิว:';
+                document.getElementById('quick-input').placeholder = 'เช่น 101 แล้ว Enter';
+                renderQueues();
+                renderHistory();
+                alert('ล้างข้อมูลคิวทั้งหมดเรียบร้อยแล้ว');
+            }
+        }
+
+        document.getElementById('quick-input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                let rawVal = this.value.trim();
+
+                if (!rawVal) {
+                    if (pendingQueueNum === null && lastAnnouncedText) {
+                        enqueueSpeech(lastAnnouncedText);
+                    }
+                    return;
+                }
+
+                if (rawVal.includes('/')) {
+                    let parts = rawVal.split('/').filter(part => part.trim() !== '');
+                    if (parts.length > 0) {
+                        rawVal = parts[parts.length - 1];
+                    }
+                }
+
+                if (pendingQueueNum === null) {
+                    let cleanedNum = rawVal.trim();
+                    if (!cleanedNum) {
+                        this.value = '';
+                        return;
+                    }
+                    pendingQueueNum = cleanedNum;
+                    this.value = '';
+                    document.getElementById('input-label').innerText = `จุด (${pendingQueueNum}):`;
+                    document.getElementById('quick-input').placeholder = '19-24, 14, 1, 3, 5, 6';
+                    return;
+                }
+
+                let targetCode = rawVal.trim();
+                let queueNum = pendingQueueNum;
+                pendingQueueNum = null; 
+                document.getElementById('input-label').innerText = 'คิว:';
+                document.getElementById('quick-input').placeholder = 'เช่น 101 แล้ว Enter';
+
+                const allowedCounters = ['14', '19', '20', '21', '22', '23', '24', '1', '3', '5', '6'];
+                if (!allowedCounters.includes(targetCode)) {
+                    this.value = '';
+                    return;
+                }
+
+                let queueType = 'general';
+                if (queueNum.startsWith('*')) {
+                    queueType = 'elderly';
+                    queueNum = queueNum.substring(1);
+                }
+
+                let targetKey = '';
+                let zoneText = '';
+                let clinicAnnounce = '';
+                let speakString = '';
+
+                const triageList = ['19', '20', '21', '22', '23', '24'];
+                if (triageList.includes(targetCode)) {
+                    targetKey = targetCode;
+                    zoneText = 'จุดซักประวัติ';
+                    currentQueues[targetKey] = queueNum;
+
+                    speakString = `ขอเชิญ หมายเลข ${queueNum} ที่ จุดซักประวัติ ที่ ${targetCode} ค่ะ`;
+
+                    localStorage.setItem('hospital_queues_v5', JSON.stringify(currentQueues));
+                    renderQueues();
+                    triggerHighlight(targetCode);
+
+                } else if (targetCode === '14') {
+                    targetKey = '14';
+                    zoneText = 'จุดเรียกพบแพทย์';
+                    if (!currentQueues['14']) currentQueues['14'] = { general: '-', elderly: '-' };
+                    currentQueues['14'][queueType] = queueNum;
+
+                    if (queueType === 'elderly') {
+                        speakString = `ขอเชิญผู้สูงอายุ หมายเลข ${queueNum} ที่ จุดเรียกพบแพทย์ จุดที่ 14 ค่ะ`;
+                    } else {
+                        speakString = `ขอเชิญ หมายเลข ${queueNum} ที่ จุดเรียกพบแพทย์ จุดที่ 14 ค่ะ`;
+                    }
+
+                    localStorage.setItem('hospital_queues_v5', JSON.stringify(currentQueues));
+                    renderQueues();
+                    triggerHighlight('14');
+
+                } else if (['1', '3', '5', '6'].includes(targetCode)) {
+                    targetKey = `14-${targetCode}`;
+                    currentQueues[targetKey] = queueNum;
+
+                    if (targetCode === '6') {
+                        zoneText = 'จุด';
+                        clinicAnnounce = ' คิวตรวจด่วน';
+                    } else {
+                        zoneText = 'จุด';
+                        clinicAnnounce = ` ${clinicMap[targetCode]}`;
+                    }
+
+                    speakString = `ขอเชิญ หมายเลข ${queueNum}${clinicAnnounce} ที่ จุดเรียกพบแพทย์ จุดที่ 14 ค่ะ`;
+
+                    localStorage.setItem('hospital_queues_v5', JSON.stringify(currentQueues));
+                    renderQueues();
+                    triggerClinicHighlight(targetCode);
+                }
+
+                let currentTime = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                let historyEntry = {
+                    number: (queueType === 'elderly' ? 'ผู้สูงอายุ ' : '') + queueNum,
+                    location: `${zoneText} ${targetCode === '14' ? '14' : (triageList.includes(targetCode) ? targetCode : '14')}${clinicAnnounce}`,
+                    time: currentTime
+                };
+                queueHistory.unshift(historyEntry);
+                if (queueHistory.length > 5) queueHistory.pop();
+                localStorage.setItem('hospital_history_v5', JSON.stringify(queueHistory));
+                renderHistory();
+
+                lastAnnouncedText = speakString;
+                localStorage.setItem('hospital_last_speech_v5', speakString);
+                enqueueSpeech(speakString);
+
+                this.value = '';
+            }
+        });
+
+        function enqueueSpeech(text) {
+            speechQueue.push(text);
+            processSpeechQueue();
+        }
+
+        function processSpeechQueue() {
+            if (isSpeaking || speechQueue.length === 0) return;
+
+            isSpeaking = true;
+            let textToSpeak = speechQueue.shift();
+
+            if ('speechSynthesis' in window) {
+                let utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.lang = 'th-TH';
+                utterance.rate = 1.0;
+
+                // ค้นหาเสียงภาษาไทยที่เป็นผู้หญิง (ถ้ามีในระบบ)
+                let voices = window.speechSynthesis.getVoices();
+                let thaiVoice = voices.find(voice => 
+                    (voice.lang === 'th-TH' || voice.lang === 'th') && 
+                    (voice.name.includes('Female') || voice.name.includes('Kanya') || voice.name.includes('Premwadee') || voice.name.includes('Google'))
+                );
+                
+                // ถ้าไม่เจอเงื่อนไขเจาะจง ให้เลือกเสียงภาษาไทยเสียงแรกที่พบ
+                if (!thaiVoice) {
+                    thaiVoice = voices.find(voice => voice.lang === 'th-TH' || voice.lang === 'th');
+                }
+
+                if (thaiVoice) {
+                    utterance.voice = thaiVoice;
+                }
+
+                utterance.onend = function () {
+                    isSpeaking = false;
+                    processSpeechQueue();
+                };
+
+                utterance.onerror = function () {
+                    isSpeaking = false;
+                    processSpeechQueue();
+                };
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                isSpeaking = false;
+            }
+        }
+
+        // โหลดรายชื่อเสียงล่วงหน้า (บางเบราว์เซอร์ต้องรอ event นี้)
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        function triggerHighlight(num) {
+            const box = document.getElementById(`box-${num}`);
+            if (box) {
+                box.classList.add('highlight');
+                setTimeout(() => box.classList.remove('highlight'), 4000);
+            }
+        }
+
+        function triggerClinicHighlight(clinicId) {
+            if (clinicId === '14') {
+                const box = document.getElementById(`box-14`);
+                if (box) {
+                    box.classList.add('highlight');
+                    setTimeout(() => box.classList.remove('highlight'), 4000);
+                }
+            } else {
+                const box = document.getElementById(`box-clinic-${clinicId}`);
+                if (box) {
+                    box.classList.add('highlight');
+                    setTimeout(() => box.classList.remove('highlight'), 4000);
+                }
+            }
+        }
+
+        window.onload = initDisplay;
+    </script>
+</body>
+</html>
