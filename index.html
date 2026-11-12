@@ -633,6 +633,11 @@
             updateLiveClock();
             setInterval(updateLiveClock, 1000);
 
+            // โหลดและบังคับเตรียมเสียงพูดภาษาไทยล่วงหน้า
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+            }
+
             const quickInput = document.getElementById('quick-input');
             quickInput.focus();
             document.addEventListener('click', () => {
@@ -837,15 +842,10 @@
                 utterance.rate = 1.0;
 
                 let voices = window.speechSynthesis.getVoices();
-                let thaiVoice = voices.find(voice => 
-                    (voice.lang === 'th-TH' || voice.lang === 'th') && 
-                    (voice.name.includes('Female') || voice.name.includes('Kanya') || voice.name.includes('Premwadee') || voice.name.includes('Google'))
-                );
                 
-                if (!thaiVoice) {
-                    thaiVoice = voices.find(voice => voice.lang === 'th-TH' || voice.lang === 'th');
-                }
-
+                // ค้นหาเสียงภาษาไทยแบบเจาะจงทุกรูปแบบ
+                let thaiVoice = voices.find(v => v.lang === 'th-TH' || v.lang === 'th' || v.name.toLowerCase().includes('thai') || v.name.toLowerCase().includes('kanya') || v.name.toLowerCase().includes('premwadee'));
+                
                 if (thaiVoice) {
                     utterance.voice = thaiVoice;
                 }
