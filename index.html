@@ -31,47 +31,51 @@
             font-family: 'Kanit', sans-serif;
         }
 
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+        }
+
         body {
             background-color: var(--bg-main);
             color: var(--text-main);
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
-            padding: 16px;
+            padding: 8px 12px;
+            gap: 8px;
         }
 
         /* Header Styles */
         header {
             background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
             color: white;
-            padding: 14px 24px;
-            border-radius: 16px;
+            padding: 8px 16px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 10px 25px -5px rgba(29, 78, 216, 0.2);
-            margin-bottom: 14px;
+            box-shadow: 0 4px 12px -3px rgba(29, 78, 216, 0.2);
+            flex-shrink: 0;
         }
 
         .header-title-wrapper {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 10px;
         }
 
         .hospital-logo {
-            font-size: 2.2rem;
+            font-size: 1.5rem;
             background: rgba(255, 255, 255, 0.15);
-            padding: 6px 12px;
-            border-radius: 12px;
+            padding: 4px 8px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         header h1 {
-            font-size: 1.6rem;
+            font-size: 1.25rem;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
@@ -79,12 +83,12 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 14px;
         }
 
         .datetime-display {
             text-align: right;
-            font-size: 1.05rem;
+            font-size: 0.85rem;
             font-weight: 500;
             opacity: 0.95;
         }
@@ -93,138 +97,144 @@
             background-color: rgba(255, 255, 255, 0.15);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-size: 0.95rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
         }
 
         .btn-reset:hover {
             background-color: rgba(255, 255, 255, 0.25);
         }
 
-        /* Main Layout: 2 Columns (Balanced) */
+        /* Main Layout: 2 Columns */
         .main-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 10px;
             flex: 1;
-            margin-bottom: 12px;
-            align-items: stretch;
+            min-height: 0;
         }
 
         /* Zone Card Base */
         .zone-card {
             background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 16px 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            padding: 10px 14px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
             border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
+            min-height: 0;
         }
 
         .zone-title {
-            font-size: 1.35rem;
+            font-size: 1.05rem;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             border-bottom: 2px solid var(--border-color);
-            padding-bottom: 8px;
+            padding-bottom: 4px;
+            flex-shrink: 0;
         }
 
         /* Triage Grid (Left: 6 Boxes) */
         .counters-grid-triage {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 6px;
             flex: 1;
+            min-height: 0;
         }
 
         .counter-box {
             background: var(--primary-light);
             border: 2px solid #bfdbfe;
-            border-radius: 14px;
-            padding: 12px;
+            border-radius: 10px;
+            padding: 4px 8px;
             text-align: center;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             justify-content: center;
+            min-height: 0;
         }
 
         .triage-inner {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 1px;
         }
 
         .triage-col-left {
-            font-size: 1.05rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             font-weight: 600;
         }
 
         .triage-val-num {
-            font-size: 1.4rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--primary);
         }
 
         .triage-col-right {
             background: white;
-            border-radius: 10px;
-            padding: 8px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            border-radius: 6px;
+            padding: 2px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
             border: 1px solid #e2e8f0;
         }
 
         .triage-number {
-            font-size: 0.85rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             font-weight: 500;
         }
 
         .triage-val-queue {
-            font-size: 3.8rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: var(--primary);
-            line-height: 1.1;
+            line-height: 1;
         }
 
-        /* Doctor Zone (Right: 3 Stacked Sections matching the requested frames) */
+        /* Doctor Zone (Right) */
         .doctor-zone {
             background: linear-gradient(to bottom, #ffffff, var(--success-light));
         }
 
         .doctor-content-wrapper {
             display: grid;
-            grid-template-rows: 1fr 1fr 1fr;
-            gap: 12px;
+            grid-template-rows: 1.2fr 1fr 1fr;
+            gap: 6px;
             flex: 1;
+            min-height: 0;
         }
 
         /* Box 1: จุดที่ 14 */
         .box-14-container {
             background: white;
             border: 2px solid #bbf7d0;
-            border-radius: 14px;
-            padding: 12px 16px;
+            border-radius: 10px;
+            padding: 6px 10px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 4px 6px -1px rgba(21, 128, 61, 0.05);
+            box-shadow: 0 2px 4px rgba(21, 128, 61, 0.04);
+            min-height: 0;
         }
 
         .box-14-title {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--success);
             text-align: center;
@@ -235,38 +245,37 @@
             justify-content: space-around;
             align-items: center;
             background: var(--success-light);
-            border-radius: 10px;
-            padding: 8px 10px;
+            border-radius: 6px;
+            padding: 3px 6px;
         }
 
         .queue-type-item-14 {
             text-align: center;
             flex: 1;
             background: white;
-            border-radius: 10px;
-            padding: 6px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            border-radius: 6px;
+            padding: 3px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
             border: 1px solid #bbf7d0;
-            margin: 0 4px;
+            margin: 0 3px;
         }
 
         .queue-type-label-14 {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             color: var(--success);
             font-weight: 700;
         }
 
         .box-14-num-label {
-            font-size: 0.75rem;
+            font-size: 0.6rem;
             color: var(--text-muted);
             font-weight: 500;
-            margin-top: 2px;
         }
 
         .queue-number-14 {
-            font-size: 3.8rem;
+            font-size: 2.1rem;
             font-weight: 800;
-            line-height: 1.1;
+            line-height: 1;
         }
 
         .queue-number-14.general {
@@ -281,30 +290,31 @@
         .counters-grid-clinic {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 6px;
+            min-height: 0;
         }
 
         .clinic-box {
             background: var(--success-light);
             border: 2px solid #bbf7d0;
-            border-radius: 14px;
-            padding: 10px;
+            border-radius: 10px;
+            padding: 4px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 0;
         }
 
         .clinic-inner {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 1px;
         }
 
         .counter-name {
-            font-size: 0.95rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--success);
             white-space: nowrap;
@@ -314,74 +324,75 @@
 
         .clinic-col-right {
             background: white;
-            border-radius: 10px;
-            padding: 6px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            border-radius: 6px;
+            padding: 3px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
             border: 1px solid #bbf7d0;
         }
 
         .clinic-number-label {
-            font-size: 0.75rem;
+            font-size: 0.6rem;
             color: var(--text-muted);
             font-weight: 500;
         }
 
         .counter-number {
-            font-size: 3.8rem;
+            font-size: 2.1rem;
             font-weight: 800;
             color: var(--success);
-            line-height: 1.1;
+            line-height: 1;
         }
 
         /* Box 3: คิวตรวจด่วน */
         .counter-box.express {
             background: var(--danger-light);
             border: 2px solid #fecaca;
-            border-radius: 14px;
-            padding: 10px;
+            border-radius: 10px;
+            padding: 4px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 0;
         }
 
         .express-inner {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 1px;
         }
 
         .counter-box.express .counter-name {
             color: var(--danger);
-            font-size: 1rem;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
         .express-col-right {
             background: white;
-            border-radius: 10px;
-            padding: 6px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            border-radius: 6px;
+            padding: 3px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
             border: 1px solid #fecaca;
         }
 
         .express-number-label {
-            font-size: 0.75rem;
+            font-size: 0.6rem;
             color: var(--text-muted);
             font-weight: 500;
         }
 
         .counter-box.express .counter-number {
             color: var(--danger);
-            font-size: 3.8rem;
+            font-size: 2.2rem;
+            line-height: 1;
         }
 
         /* Highlight Animation */
         @keyframes pulseHighlight {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.4); }
-            50% { transform: scale(1.02); box-shadow: 0 0 25px 8px rgba(29, 78, 216, 0.35); background-color: #dbeafe; }
+            50% { transform: scale(1.01); box-shadow: 0 0 15px 4px rgba(29, 78, 216, 0.3); background-color: #dbeafe; }
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(29, 78, 216, 0); }
         }
 
@@ -393,84 +404,88 @@
         /* History Container (Bottom) */
         .history-container {
             background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 12px 20px;
+            border-radius: 8px;
+            padding: 6px 14px;
             border: 1px solid var(--border-color);
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            flex-shrink: 0;
         }
 
         .history-title {
-            font-size: 1rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: var(--text-muted);
             white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
         .history-list {
             display: flex;
-            gap: 16px;
+            gap: 10px;
             overflow-x: auto;
             white-space: nowrap;
             width: 100%;
-            padding: 4px 0;
+            padding: 2px 0;
         }
 
         .history-item {
             background: var(--bg-main);
-            padding: 6px 14px;
-            border-radius: 8px;
+            padding: 2px 10px;
+            border-radius: 6px;
             border: 1px solid var(--border-color);
-            font-size: 0.95rem;
+            font-size: 0.75rem;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
         }
 
         /* Hidden Command Box */
         .hidden-command-box {
             position: fixed;
-            bottom: 12px;
-            right: 12px;
+            bottom: 8px;
+            right: 8px;
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(4px);
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 3px 8px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 1000;
         }
 
         .hidden-command-box label {
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 500;
         }
 
         .hidden-command-box input {
             background: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            padding: 4px 8px;
+            border-radius: 4px;
+            padding: 2px 4px;
             color: white;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             outline: none;
-            width: 150px;
+            width: 110px;
         }
 
         .hidden-command-box input::placeholder {
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Responsive for smaller screens */
         @media (max-width: 1100px) {
+            html, body {
+                height: auto;
+                overflow: auto;
+            }
             .main-layout {
                 grid-template-columns: 1fr;
             }
@@ -493,15 +508,15 @@
         <!-- โซนจุดซักประวัติ (จุดที่ 19 - 24) - ซ้ายมือ (6 ช่อง) -->
         <div class="zone-card">
             <div class="zone-title" style="color: var(--primary);">
-                📋 จุดซักประวัติ <span style="font-size: 14px; font-weight: 500; color: #64748b;">(จุดที่ 19 - 24)</span>
+                📋 จุดซักประวัติ <span style="font-size: 12px; font-weight: 500; color: #64748b;">(จุดที่ 19 - 24)</span>
             </div>
             <div class="counters-grid-triage" id="triage-grid"></div>
         </div>
 
-        <!-- โซนจุดเรียกพบแพทย์ - ขวามือ (จัดแบ่งเป็น 3 บล็อกบาลานซ์กัน) -->
+        <!-- โซนจุดเรียกพบแพทย์ - ขวามือ -->
         <div class="zone-card doctor-zone">
             <div class="zone-title" style="color: var(--success);">
-                🩺 จุดเรียกพบแพทย์ จุดที่ 14 <span style="font-size: 14px; font-weight: 500; color: #64748b;">(หมายเลขที่ปรากฏบนหน้าจอเรียกพบแพทย์ ติดต่อจุดบริการ 14)</span>
+                🩺 จุดเรียกพบแพทย์ จุดที่ 14 <span style="font-size: 12px; font-weight: 500; color: #64748b;">(หมายเลขที่ปรากฏบนหน้าจอเรียกพบแพทย์ ติดต่อจุดบริการ 14)</span>
             </div>
 
             <div class="doctor-content-wrapper">
@@ -539,18 +554,18 @@
         </div>
     </div>
 
-    <!-- แถบประวัติการเรียกคิว (อยู่ข้างล่างสุด) -->
+    <!-- แถบประวัติการเรียกคิว -->
     <div class="history-container">
         <div class="history-title">🕒 ประวัติคิวล่าสุด:</div>
         <div class="history-list" id="history-list">
-            <span style="color: #94a3b8; font-size: 0.95rem; font-weight: 500;">ยังไม่มีประวัติการเรียกคิว</span>
+            <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 500;">ยังไม่มีประวัติการเรียกคิว</span>
         </div>
     </div>
 
     <!-- ช่องคำสั่งลอยมุมขวาล่าง -->
     <div class="hidden-command-box">
         <label for="quick-input" id="input-label">คิว:</label>
-        <input type="text" id="quick-input" placeholder="...">
+        <input type="text" id="quick-input" placeholder="เช่น 101 แล้ว Enter">
     </div>
 
     <script>
@@ -657,13 +672,13 @@
         function renderHistory() {
             const historyList = document.getElementById('history-list');
             if (queueHistory.length === 0) {
-                historyList.innerHTML = '<span style="color: #94a3b8; font-size: 0.95rem; font-weight: 500;">ยังไม่มีประวัติการเรียกคิว</span>';
+                historyList.innerHTML = '<span style="color: #94a3b8; font-size: 0.85rem; font-weight: 500;">ยังไม่มีประวัติการเรียกคิว</span>';
                 return;
             }
 
             historyList.innerHTML = queueHistory.map(item => `
                 <div class="history-item">
-                    <strong style="color: var(--primary);">${item.number}</strong> ➔ ${item.location} <span style="color: #64748b; font-size: 0.85rem;">(${item.time})</span>
+                    <strong style="color: var(--primary);">${item.number}</strong> ➔ ${item.location} <span style="color: #64748b; font-size: 0.75rem;">(${item.time})</span>
                 </div>
             `).join('');
         }
@@ -885,3 +900,4 @@
     </script>
 </body>
 </html>
+
